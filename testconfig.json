@@ -1,5 +1,7 @@
 {
   "libreLogger" : {
+    "defaultLevel": "INFO",
+    "defaultDestination": "CONSOLE",
     "loggers": [
       {"DATAGQL": {"topic":"DATAGQL"}},
       {"EDGEMQTT": {"topic":"EDGEMQTT"}},
@@ -16,13 +18,11 @@
       {"MESDISTR": {"topic":"MESDISTR"}},
       {"MESRLHDL": {"topic":"MESRLHDL"}},
       {"MESFUNCS": {"topic":"MESFUNCS"}},
-      {"MAIN": {"topic":"MAIN"}},
+      {"MAIN": {"topic":"MAIN", "level": "DEBUG"}},
       {
         "DEFAULT": {
           "topic": "DEFAULT",
-          "destination": [
-            "CONSOLE"
-          ]
+          "destination": "FILE:testout.log"
         }
       }
     ]

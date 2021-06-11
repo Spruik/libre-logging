@@ -12,4 +12,5 @@ type LoggerLocalIF interface {
 	Errorf(format string, arg ...interface{})
 
 	NewLogger(topic string) LoggerLocalIF
+	SetLoggingLevel(level string)
 }

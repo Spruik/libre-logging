@@ -35,3 +35,11 @@ func (s *LoggingEnabler) LogError(msg ...interface{}) {
 func (s *LoggingEnabler) LogErrorf(format string, arg ...interface{}) {
 	s.logger.Errorf(format, arg...)
 }
+
+func (s *LoggingEnabler) LogWarn(msg ...interface{}) {
+	s.logger.Warn(msg...)
+}
+
+func (s *LoggingEnabler) LogWarnf(format string, arg ...interface{}) {
+	s.logger.Warnf(format, arg...)
+}

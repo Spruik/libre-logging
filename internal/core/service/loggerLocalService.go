@@ -42,3 +42,6 @@ func (s *LoggerLocalService) Errorf(format string, arg ...interface{}) {
 func (s *LoggerLocalService) NewLogger(topic string) port.LoggerLocalIF {
 	return s.loggerPort.NewLogger(topic)
 }
+func (s *LoggerLocalService) SetLoggingLevel(level string) {
+	s.loggerPort.SetLoggingLevel(level)
+}
