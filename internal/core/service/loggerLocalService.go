@@ -1,47 +1,63 @@
 package service
 
-import (
-	"github.com/bruchte/libreLogger/internal/core/port"
-)
+import "github.com/Spruik/libre-logging/interfaces"
+
+var LoggerMap = map[string]*LoggerLocalService{}
 
 type LoggerLocalService struct {
-	loggerPort port.LoggerLocalIF
+	loggerinterfaces interfaces.LoggerLocalIF
 }
 
-func NewLoggerLocalService(port port.LoggerLocalIF) *LoggerLocalService {
+func NewLoggerLocalService(interfaces interfaces.LoggerLocalIF) *LoggerLocalService {
 	return &LoggerLocalService{
-		loggerPort: port,
+		loggerinterfaces: interfaces,
 	}
 }
 
 func (s *LoggerLocalService) Debug(msg ...interface{}) {
-	s.loggerPort.Debug(msg...)
+	s.loggerinterfaces.Debug(msg...)
 }
 func (s *LoggerLocalService) Debugf(format string, arg ...interface{}) {
-	s.loggerPort.Debugf(format, arg...)
+	s.loggerinterfaces.Debugf(format, arg...)
 }
 func (s *LoggerLocalService) Info(msg ...interface{}) {
-	s.loggerPort.Info(msg...)
+	s.loggerinterfaces.Info(msg...)
 }
 func (s *LoggerLocalService) Infof(format string, arg ...interface{}) {
-	s.loggerPort.Infof(format, arg...)
+	s.loggerinterfaces.Infof(format, arg...)
 }
 func (s *LoggerLocalService) Warn(msg ...interface{}) {
-	s.loggerPort.Warn(msg...)
+	s.loggerinterfaces.Warn(msg...)
 }
 func (s *LoggerLocalService) Warnf(format string, arg ...interface{}) {
-	s.loggerPort.Warnf(format, arg...)
+	s.loggerinterfaces.Warnf(format, arg...)
 }
 func (s *LoggerLocalService) Error(msg ...interface{}) {
-	s.loggerPort.Error(msg...)
+	s.loggerinterfaces.Error(msg...)
 }
 func (s *LoggerLocalService) Errorf(format string, arg ...interface{}) {
-	s.loggerPort.Errorf(format, arg...)
+	s.loggerinterfaces.Errorf(format, arg...)
 }
 
-func (s *LoggerLocalService) NewLogger(topic string) port.LoggerLocalIF {
-	return s.loggerPort.NewLogger(topic)
-}
+//func (s *LoggerLocalService) NewLogger(topic string) interfaces2.LoggerLocalIF {
+//	return s.loggerinterfaces.NewLogger(topic)
+//}
 func (s *LoggerLocalService) SetLoggingLevel(level string) {
-	s.loggerPort.SetLoggingLevel(level)
+	s.loggerinterfaces.SetLoggingLevel(level)
+}
+func (s *LoggerLocalService) AcceptVisitor(visitor interfaces.LibreLoggerVisitor) {
+	s.loggerinterfaces.AcceptVisitor(visitor)
+}
+
+func (s *LoggerLocalService) GetLevel() string {
+	return s.loggerinterfaces.GetLevel()
+}
+func (s *LoggerLocalService) GetDestination() string {
+	return s.loggerinterfaces.GetDestination()
+}
+func (s *LoggerLocalService) GetName() string {
+	return s.loggerinterfaces.GetName()
+}
+func (s *LoggerLocalService) GetTopic() string {
+	return s.loggerinterfaces.GetTopic()
 }

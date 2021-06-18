@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/LibreLogger.iml" filepath="$PROJECT_DIR$/.idea/LibreLogger.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/libre-logging.iml" filepath="$PROJECT_DIR$/.idea/libre-logging.iml" />
     </modules>
   </component>
 </project>

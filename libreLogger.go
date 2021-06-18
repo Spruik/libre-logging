@@ -1,14 +1,14 @@
 package libreLogger
 
 import (
-	"github.com/bruchte/libreConfig"
-	"github.com/bruchte/libreConfig/shared"
-	"github.com/bruchte/libreLogger/internal/core/service"
-	"github.com/bruchte/libreLogger/internal/implementation"
+	"github.com/Spruik/libre-configuration"
+	"github.com/Spruik/libre-configuration/shared"
+	"github.com/Spruik/libre-logging/api"
+	"github.com/Spruik/libre-logging/internal/core/service"
+	"github.com/Spruik/libre-logging/internal/implementation"
 	"log"
+	"net/http"
 )
-
-var loggerMap = map[string]*service.LoggerLocalService{}
 
 func Initialize(configComponentName string) {
 	var err error
@@ -40,21 +40,32 @@ func Initialize(configComponentName string) {
 				//TODO - other config attrs
 			}
 		}
-		t := implementation.NewLoggerLocalInternal(topic, dest)
-		t.SetLoggingLevel(level)
-		loggerMap[loggerName] = service.NewLoggerLocalService(t)
-		log.Printf("Built logger %s with topic %s", loggerName, topic)
+		t := implementation.NewLoggerLocalInternal(loggerName, topic, level, dest)
+		service.LoggerMap[loggerName] = service.NewLoggerLocalService(t)
+		log.Printf("Built logger %s with topic %s, level %s, and destination %s", loggerName, topic, level, dest)
 	}
 	topic = "********"
-	t := implementation.NewLoggerLocalInternal(topic, dest)
-	loggerMap[topic] = service.NewLoggerLocalService(t)
+	t := implementation.NewLoggerLocalInternal(topic, topic, defLevel, dest)
+	service.LoggerMap[topic] = service.NewLoggerLocalService(t)
 	log.Printf("Built default logger %s with topic %s", topic, topic)
 }
 
 func GetLogger(name string) *service.LoggerLocalService {
-	ret := loggerMap[name]
+	ret := service.LoggerMap[name]
 	if ret == nil {
-		ret = loggerMap["********"]
+		ret = service.LoggerMap["********"]
+		ret.Warn("###################  MISSING CONFIGURATION ###################")
+		ret.Warnf("### Request for logger named '%s' which is not configured", name)
+		ret.Warnf("###   consider adding: {\"%s\": {\"topic\":\"<topic>\", \"level\": \"<level>\"}} to the loggers", name)
+		ret.Warn("##############################################################")
 	}
 	return ret
+}
+
+func GetRESTAPIEntryPoints() map[string]func(w http.ResponseWriter, r *http.Request) {
+	return map[string]func(w http.ResponseWriter, r *http.Request){
+		"/loggers":                api.LoggersLink,
+		"/loggers/{level}":        api.ChangeAllLoggersLink,
+		"/loggers/{name}/{level}": api.ChangeOneLoggerLink,
+	}
 }

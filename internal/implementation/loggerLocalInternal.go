@@ -2,24 +2,28 @@ package implementation
 
 import (
 	"fmt"
-	"github.com/bruchte/libreConfig"
-	"github.com/bruchte/libreLogger/internal/core/port"
+	"github.com/Spruik/libre-configuration"
+	"github.com/Spruik/libre-logging/interfaces"
 	"log"
 	"os"
 	"runtime"
 	"strings"
+	"sync"
 )
 
 type LoggerLocalInternal struct {
 	//inherit config
 	libreConfig.ConfigurationEnabler
+	changeMutex    sync.Mutex
 	destination    string
 	logger         *log.Logger
 	level          string
+	name           string
+	topic          string
 	levelHierarchy map[string]int
 }
 
-func NewLoggerLocalInternal(topic string, dest string) *LoggerLocalInternal {
+func NewLoggerLocalInternal(name string, topic string, level string, dest string) *LoggerLocalInternal {
 	var err error
 	//config?
 	t := "[" + topic + "]"
@@ -39,8 +43,12 @@ func NewLoggerLocalInternal(topic string, dest string) *LoggerLocalInternal {
 	l := log.New(d, t, log.Ltime|log.Lmicroseconds)
 	lh := map[string]int{"ERROR": 10, "WARN": 20, "INFO": 30, "DEBUG": 40}
 	return &LoggerLocalInternal{
+		changeMutex:    sync.Mutex{},
 		logger:         l,
 		destination:    dest,
+		level:          level,
+		name:           name,
+		topic:          topic,
 		levelHierarchy: lh,
 	}
 }
@@ -86,24 +94,52 @@ func (s *LoggerLocalInternal) Errorf(format string, arg ...interface{}) {
 	s.logFormatted("ERROR", format, arg...)
 }
 
-func (s *LoggerLocalInternal) NewLogger(topic string) port.LoggerLocalIF {
-	return NewLoggerLocalInternal(topic, s.destination)
-}
+//func (s *LoggerLocalInternal) NewLogger(topic string) port.LoggerLocalIF {
+//	return NewLoggerLocalInternal(topic, s.destination)
+//}
 
 func (s *LoggerLocalInternal) SetLoggingLevel(level string) {
+	s.changeMutex.Lock()
 	s.level = strings.ToUpper(level)
+	s.changeMutex.Unlock()
 }
 
+func (s *LoggerLocalInternal) AcceptVisitor(visitor interfaces.LibreLoggerVisitor) {
+	//TODO - lock if for change
+	visitor.LibreLoggerVisit(s)
+}
+
+func (s *LoggerLocalInternal) GetLevel() string {
+	return s.level
+}
+
+func (s *LoggerLocalInternal) GetDestination() string {
+	return s.destination
+}
+
+func (s *LoggerLocalInternal) GetName() string {
+	return s.name
+}
+
+func (s *LoggerLocalInternal) GetTopic() string {
+	return s.topic
+}
+
+//////////////////////////////////////////////////////////
 func (s *LoggerLocalInternal) logDirect(level string, msg ...interface{}) {
+	s.changeMutex.Lock()
 	if s.shouldLog(level) {
 		msg[0] = level + "|" + getCallerString() + fmt.Sprintf("%s", msg[0])
 		s.logger.Println(msg...)
 	}
+	s.changeMutex.Unlock()
 }
 func (s *LoggerLocalInternal) logFormatted(level string, format string, arg ...interface{}) {
+	s.changeMutex.Lock()
 	if s.shouldLog(level) {
 		s.logger.Printf(level+"|"+getCallerString()+format, arg...)
 	}
+	s.changeMutex.Unlock()
 }
 
 func (s *LoggerLocalInternal) shouldLog(level string) bool {

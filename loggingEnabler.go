@@ -1,10 +1,12 @@
 package libreLogger
 
-import "github.com/bruchte/libreLogger/internal/core/port"
+import (
+	"github.com/Spruik/libre-logging/interfaces"
+)
 
 type LoggingEnabler struct {
 	hook   string
-	logger port.LoggerLocalIF
+	logger interfaces.LoggerLocalIF
 }
 
 func (s *LoggingEnabler) SetLoggerConfigHook(hook string) {
