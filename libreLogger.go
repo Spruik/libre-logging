@@ -1,25 +1,27 @@
 package libreLogger
 
 import (
-	"github.com/Spruik/libre-configuration"
+	"errors"
+	"log"
+	"net/http"
+
+	libreConfig "github.com/Spruik/libre-configuration"
 	"github.com/Spruik/libre-configuration/shared"
 	"github.com/Spruik/libre-logging/api"
 	"github.com/Spruik/libre-logging/internal/core/service"
 	"github.com/Spruik/libre-logging/internal/implementation"
-	"log"
-	"net/http"
 )
 
-func Initialize(configComponentName string) {
+func Initialize(configComponentName string) error {
 	var err error
 	var defDest string
-	defDest, err = libreConfig.GetConfigService().GetConfigEntryWithDefault(configComponentName, "defaultDestination", "CONSOLE")
+	defDest, _ = libreConfig.GetConfigService().GetConfigEntryWithDefault(configComponentName, "defaultDestination", "CONSOLE")
 	var defLevel string
-	defLevel, err = libreConfig.GetConfigService().GetConfigEntryWithDefault(configComponentName, "defaultLevel", "DEBUG")
+	defLevel, _ = libreConfig.GetConfigService().GetConfigEntryWithDefault(configComponentName, "defaultLevel", "DEBUG")
 	var loggersStanza *shared.ConfigItem
 	loggersStanza, err = libreConfig.GetConfigService().GetConfigStanza(configComponentName, "loggers")
 	if err != nil {
-		panic("Error looking for 'loggers' section in component configuration")
+		return errors.New("error looking for 'loggers' section in component configuration")
 	}
 	var topic string
 	var dest = defDest
@@ -48,6 +50,7 @@ func Initialize(configComponentName string) {
 	t := implementation.NewLoggerLocalInternal(topic, topic, defLevel, dest)
 	service.LoggerMap[topic] = service.NewLoggerLocalService(t)
 	log.Printf("Built default logger %s with topic %s", topic, topic)
+	return nil
 }
 
 func GetLogger(name string) *service.LoggerLocalService {
