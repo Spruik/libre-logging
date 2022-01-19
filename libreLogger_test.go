@@ -2,10 +2,11 @@ package libreLogger
 
 import (
 	"fmt"
-	"github.com/Spruik/libre-configuration"
+	"testing"
+
+	libreConfig "github.com/Spruik/libre-configuration"
 	"github.com/Spruik/libre-logging/interfaces"
 	"github.com/Spruik/libre-logging/internal/core/service"
-	"testing"
 )
 
 func TestInitialize(t *testing.T) {
