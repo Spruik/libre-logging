@@ -1,13 +1,13 @@
 package api
 
 import (
-	"errors"
 	"fmt"
+	"net/http"
+	"sort"
+
 	"github.com/Spruik/libre-logging/interfaces"
 	"github.com/Spruik/libre-logging/internal/core/service"
 	"github.com/gorilla/mux"
-	"net/http"
-	"sort"
 )
 
 func VisitAllLoggers(visitor interfaces.LibreLoggerVisitor) {
@@ -22,7 +22,7 @@ func VisitOneLogger(name string, visitor interfaces.LibreLoggerVisitor) error {
 	if logger != nil {
 		logger.AcceptVisitor(visitor)
 	} else {
-		err = errors.New(fmt.Sprintf("No logger named '%s'", name))
+		err = fmt.Errorf("no logger named '%s'", name)
 	}
 	return err
 }
@@ -51,7 +51,7 @@ func LoggersLink(w http.ResponseWriter, r *http.Request) {
 	var respStr = ""
 	visitor := loggerDataVisitor{results: map[string]loggerData{}}
 	VisitAllLoggers(&visitor)
-	lgrNames := make([]string, 0, 0)
+	lgrNames := make([]string, 0)
 	for lgrName := range visitor.results {
 		lgrNames = append(lgrNames, lgrName)
 	}
