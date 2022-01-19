@@ -1,3 +1,7 @@
+github.com/Spruik/libre-configuration v0.1.0 h1:ymy2kmRC3ihHG69Shk4d3HscmS0g7okOIYrFCxYjqdg=
+github.com/Spruik/libre-configuration v0.1.0/go.mod h1:95cSnDurEhvHGAF1Z1Qdt3x3+JyIH8uirWHPhAa07V8=
+github.com/Spruik/libre-configuration v0.2.0 h1:aRu5HiJXODUuMu1/iShCdoVp8SlvgVBw418Y9OLHRz0=
+github.com/Spruik/libre-configuration v0.2.0/go.mod h1:95cSnDurEhvHGAF1Z1Qdt3x3+JyIH8uirWHPhAa07V8=
 github.com/antchfx/jsonquery v1.1.4 h1:+OlFO3QS9wjU0MKx9MgHm5f6o6hdd4e9mUTp0wTjxlM=
 github.com/antchfx/jsonquery v1.1.4/go.mod h1:cHs8r6Bymd8j6HI6Ej1IJbjahKvLBcIEh54dfmo+E9A=
 github.com/antchfx/xpath v1.1.7 h1:RgnAdTaRzF4bBiTqdDA7ZQ7IU8ivc72KSTf3/XCA/ic=
