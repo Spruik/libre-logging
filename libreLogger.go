@@ -57,6 +57,13 @@ func GetLogger(name string) *service.LoggerLocalService {
 	ret := service.LoggerMap[name]
 	if ret == nil {
 		ret = service.LoggerMap["********"]
+		if ret == nil {
+			log.Printf("libre-logging being used before being initilized, bootstraping\n")
+			topic := "********"
+			t := implementation.NewLoggerLocalInternal(name, topic, "DEBUG", "CONSOLE")
+			service.LoggerMap[name] = service.NewLoggerLocalService(t)
+			ret = service.LoggerMap[name]
+		}
 		ret.Warn("###################  MISSING CONFIGURATION ###################")
 		ret.Warnf("### Request for logger named '%s' which is not configured", name)
 		ret.Warnf("###   consider adding: {\"%s\": {\"topic\":\"<topic>\", \"level\": \"<level>\"}} to the loggers", name)
