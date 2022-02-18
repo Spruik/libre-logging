@@ -45,3 +45,7 @@ func (s *LoggingEnabler) LogWarn(msg ...interface{}) {
 func (s *LoggingEnabler) LogWarnf(format string, arg ...interface{}) {
 	s.logger.Warnf(format, arg...)
 }
+
+func (s *LoggingEnabler) GetLevel() string {
+	return s.logger.GetLevel()
+}
